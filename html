@@ -1,93 +1,224 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#101010">
-<title>Waveform — Music Library</title>
-<style>
-:root{--bg:#090b0b;--panel:#121615;--panel2:#1b211f;--line:#29312e;--text:#f5f7f6;--muted:#a4afaa;--green:#1ed760;--shadow:0 18px 55px #0008}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}button,input{font:inherit}button{cursor:pointer;color:inherit}a{color:inherit;text-decoration:none}
-.app{min-height:100vh;display:grid;grid-template-columns:235px minmax(0,1fr);grid-template-rows:minmax(0,1fr) 92px;gap:8px;padding:8px}
-.sidebar,.side-panel,.main-panel{min-height:0}.sidebar{display:flex;flex-direction:column;gap:8px}.side-panel,.main-panel{background:var(--panel);border-radius:12px}.side-top{padding:22px 18px}.logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:21px}.logo-mark{display:grid;place-items:center;background:var(--green);color:#07130a;width:33px;height:33px;border-radius:50%;font-size:19px}.side-nav{margin-top:24px;display:grid;gap:8px}.side-nav a,.side-nav button{display:flex;align-items:center;gap:14px;border:0;background:none;color:var(--muted);padding:8px 4px;text-align:left;font-weight:750}.side-nav a:hover,.side-nav button:hover,.side-nav .selected{color:white}.nav-icon{font-size:19px;width:22px;text-align:center}
-.library{padding:17px 16px;flex:1;overflow:auto}.library-head{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-weight:750;margin-bottom:14px}.hint{padding:14px;background:var(--panel2);border-radius:9px;color:var(--muted);font-size:12px;line-height:1.7}
-.main-panel{grid-column:2;grid-row:1;overflow:auto;background:linear-gradient(180deg,#243a30 0,#17251f 270px,var(--panel) 520px)}.topbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:15px 22px;background:#101713c9;backdrop-filter:blur(16px)}.history{display:flex;gap:8px}.circle{width:33px;height:33px;border:0;border-radius:50%;background:#070a09b5;color:white;font-size:18px}.top-actions{display:flex;gap:8px;align-items:center}.user-label{font-size:12px;color:var(--muted)}.content{padding:10px 24px 35px}.welcome{margin:14px 0 23px}.welcome h1{font-size:clamp(29px,4vw,42px);letter-spacing:-1.8px;margin:0 0 5px}.welcome p{color:#c3d0c8;margin:0}
-.btn{border:0;border-radius:99px;padding:10px 15px;background:white;color:#101010;font-size:12px;font-weight:850}.btn.green{background:var(--green);color:#07130a}.btn.dark{background:#2a342e;color:white}.btn:disabled{opacity:.5;cursor:not-allowed}
-.section-title{display:flex;align-items:center;justify-content:space-between;margin:23px 0 12px}.section-title h2{font-size:21px;letter-spacing:-.5px;margin:0}.search-row{display:flex;gap:10px;margin:12px 0}.search{flex:1;min-width:0;background:#ffffff12;border:1px solid #ffffff1c;border-radius:8px;padding:10px 12px;color:white;outline:none}.search:focus{border-color:var(--green)}
-.track-head,.track-row{display:grid;grid-template-columns:35px minmax(130px,1.6fr) minmax(90px,1fr) 65px 60px;gap:12px;align-items:center;padding:9px 10px}.track-head{color:var(--muted);font-size:11px;border-bottom:1px solid #ffffff1b}.track-row{border-radius:6px;color:var(--muted);font-size:12px}.track-row:hover,.track-row.playing{background:#ffffff12}.track-row.playing .track-title{color:var(--green)}.track-num{text-align:center}.track-main{display:flex;align-items:center;gap:11px;min-width:0}.cover{width:42px;height:42px;border-radius:4px;flex:none;display:grid;place-items:center;background:linear-gradient(135deg,#4a7158,#1c3026);font-size:18px;overflow:hidden}.cover img{width:100%;height:100%;object-fit:cover}.track-title{color:white;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.track-artist,.track-album{font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.track-actions{display:flex;gap:4px;justify-content:end}.text-btn{border:0;background:none;color:var(--muted);padding:5px}.text-btn:hover{color:white}.empty{padding:35px 15px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:10px;margin-top:10px}.empty strong{display:block;color:white;margin-bottom:5px}
-.upload-panel{padding:17px;border:1px dashed #65816f;background:#ffffff0b;border-radius:12px;margin:20px 0;display:none}.upload-panel.show{display:block}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}.field{width:100%;padding:10px 12px;background:#0e1411;border:1px solid var(--line);border-radius:8px;color:white}.field.full{grid-column:1/-1}.upload-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.small-note{font-size:11px;color:var(--muted);margin-top:9px}
-.player{grid-column:1/3;grid-row:2;display:grid;grid-template-columns:minmax(170px,1fr) minmax(250px,1.5fr) minmax(150px,1fr);align-items:center;gap:18px;background:#111614;border:1px solid #242c28;border-radius:12px;padding:12px 18px;min-width:0}.now{display:flex;align-items:center;gap:11px;min-width:0}.now-cover{width:52px;height:52px;border-radius:5px;display:grid;place-items:center;background:linear-gradient(135deg,#436a50,#172b20);font-size:20px;overflow:hidden}.now-cover img{width:100%;height:100%;object-fit:cover}.now-text{min-width:0}.now-text b,.now-text span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.now-text b{font-size:12px}.now-text span{font-size:11px;color:var(--muted)}.center{min-width:0}.controls{display:flex;align-items:center;justify-content:center;gap:17px;margin-bottom:7px}.control{border:0;background:none;color:var(--muted);font-size:17px;padding:3px}.control:hover,.control.active{color:var(--green)}.main-play{width:34px;height:34px;border-radius:50%;background:white;color:#101010}.progress{display:flex;align-items:center;gap:9px;color:var(--muted);font-size:10px}.range{appearance:none;width:100%;height:4px;border-radius:10px;background:#5c6760;outline:none;cursor:pointer}.range::-webkit-slider-thumb{appearance:none;width:11px;height:11px;border-radius:50%;background:white}.volume{display:flex;align-items:center;justify-content:end;gap:9px;color:var(--muted)}.volume .range{max-width:95px}
-.toast{position:fixed;left:50%;bottom:110px;transform:translate(-50%,12px);opacity:0;pointer-events:none;background:#d9ffe3;color:#07130a;border-radius:99px;padding:10px 16px;font-size:12px;font-weight:800;z-index:30;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}.modal-bg{display:none;position:fixed;inset:0;z-index:40;background:#000b;align-items:center;justify-content:center;padding:18px}.modal-bg.show{display:flex}.modal{width:min(440px,100%);background:#19221d;border:1px solid #3b4a40;border-radius:15px;padding:22px;box-shadow:var(--shadow)}.modal h3{margin:0 0 8px}.modal p{color:var(--muted);font-size:13px;line-height:1.7}.modal-actions{display:flex;justify-content:end;gap:8px;margin-top:17px}
-@media(max-width:850px){.app{grid-template-columns:190px minmax(0,1fr)}.player{grid-template-columns:minmax(140px,1fr) minmax(220px,1.4fr) 100px;gap:10px;padding:10px}}
-@media(max-width:650px){.app{display:flex;flex-direction:column;padding:0 0 76px;gap:0}.sidebar{display:none}.main-panel{border-radius:0;overflow:visible;min-height:calc(100vh - 145px)}.topbar{padding:12px 15px}.content{padding:8px 14px 28px}.welcome h1{font-size:31px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.track-head,.track-row{grid-template-columns:22px minmax(0,1fr) 45px 45px;gap:7px;padding:8px 5px}.album-col,.track-album{display:none}.track-main{gap:7px}.cover{width:35px;height:35px}.track-title{font-size:11px}.track-artist{font-size:10px}.track-duration{font-size:10px}.player{position:fixed;z-index:20;bottom:0;left:0;right:0;border-radius:10px 10px 0 0;grid-template-columns:minmax(0,1fr);gap:5px;padding:7px 12px 9px}.now-cover{width:38px;height:38px}.center{grid-row:2}.controls{gap:18px;margin:0 0 4px}.main-play{width:30px;height:30px}.volume{display:none}.progress{gap:7px}.toast{bottom:140px}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101014">
+  <title>WAVEFORM — Music for everyone</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root{--bg:#0d0d11;--panel:#17171e;--panel2:#20202a;--text:#f5f5f7;--muted:#a2a2ae;--accent:#a78bfa;--accent2:#7c3aed;--line:#30303a}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 85% 0%,#292044 0,transparent 30%),var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,Arial,sans-serif;min-height:100vh}
+    button,input{font:inherit}button{cursor:pointer;border:0}a{color:inherit}.app{max-width:1250px;margin:auto;padding:24px 22px 130px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:34px}.brand{display:flex;align-items:center;gap:11px;font-weight:900;font-size:21px;letter-spacing:2px}.logo{width:38px;height:38px;border-radius:13px;background:linear-gradient(135deg,#c4b5fd,#7c3aed);display:grid;place-items:center;color:#17121f;font-size:22px}
+    .head-actions{display:flex;gap:10px;align-items:center}.pill{border:1px solid var(--line);background:#17171ecc;color:var(--text);padding:10px 15px;border-radius:999px}
+    .hero{padding:34px 0 26px;max-width:760px}.eyebrow{color:#c4b5fd;font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase}.hero h1{font-size:clamp(38px,7vw,72px);line-height:1.02;letter-spacing:-3px;margin:12px 0}.hero p{color:var(--muted);font-size:16px;max-width:580px}
+    .toolbar{display:flex;gap:12px;align-items:center;margin:28px 0 20px;flex-wrap:wrap}.search{flex:1;min-width:220px;position:relative}.search input{width:100%;background:var(--panel);border:1px solid var(--line);color:var(--text);padding:14px 17px 14px 44px;border-radius:14px;outline:none}.search:before{content:"⌕";position:absolute;left:16px;top:7px;font-size:25px;color:var(--muted)}
+    .primary{background:linear-gradient(135deg,#c4b5fd,#8b5cf6);color:#160d25;font-weight:800;padding:12px 18px;border-radius:12px}.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line);padding:11px 15px;border-radius:12px}.danger{color:#ff9b9b;background:#3a1d25;border:1px solid #63303d;padding:7px 10px;border-radius:9px}
+    .section-title{display:flex;justify-content:space-between;align-items:end;margin:26px 0 14px}.section-title h2{font-size:21px;margin:0}.muted{color:var(--muted)}.count{font-size:13px;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:16px}.track{background:var(--panel);padding:13px;border:1px solid #ffffff08;border-radius:16px;transition:.2s;min-width:0}.track:hover{background:#22212b;transform:translateY(-3px)}.cover{width:100%;aspect-ratio:1;border-radius:12px;object-fit:cover;background:linear-gradient(135deg,#31234d,#17171e);display:grid;place-items:center;font-size:42px;color:#c4b5fd}.track h3{font-size:14px;margin:12px 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.track p{font-size:12px;color:var(--muted);margin:0 0 12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.track-bottom{display:flex;justify-content:space-between;align-items:center;gap:8px}.play{width:36px;height:36px;border-radius:50%;background:#c4b5fd;color:#1b1230;font-size:16px;font-weight:900}.empty{border:1px dashed #41414d;padding:40px 20px;border-radius:16px;text-align:center;color:var(--muted);grid-column:1/-1}
+    .player{position:fixed;bottom:0;left:0;right:0;background:#17171eef;backdrop-filter:blur(18px);border-top:1px solid var(--line);padding:13px 22px;z-index:5}.player-inner{max-width:1250px;margin:auto;display:grid;grid-template-columns:1fr minmax(180px,2fr) 1fr;gap:20px;align-items:center}.now{display:flex;gap:12px;align-items:center;min-width:0}.mini-cover{width:46px;height:46px;border-radius:9px;background:#302444;object-fit:cover}.now strong,.now span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.now span{font-size:12px;color:var(--muted)}.controls{text-align:center}.control-buttons{display:flex;justify-content:center;align-items:center;gap:17px}.control-buttons button{background:none;color:var(--text);font-size:18px}.control-buttons .main-play{background:#c4b5fd;color:#1b1230;width:35px;height:35px;border-radius:50%}.progress{display:flex;gap:9px;align-items:center;font-size:10px;color:var(--muted);margin-top:5px}.progress input{width:100%;accent-color:#a78bfa}.volume{text-align:right}.volume input{width:90px;accent-color:#a78bfa}
+    dialog{border:1px solid var(--line);border-radius:18px;background:#191922;color:var(--text);width:min(480px,calc(100% - 28px));padding:24px;box-shadow:0 25px 80px #0009}dialog::backdrop{background:#000a;backdrop-filter:blur(5px)}dialog h2{margin:0 0 8px}dialog p{color:var(--muted);font-size:13px}.field{margin:14px 0}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}.field input{width:100%;padding:11px 12px;border:1px solid var(--line);background:#101016;color:var(--text);border-radius:10px}.modal-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:18px}.admin-tools{display:none;gap:8px;align-items:center}.admin-tools.show{display:flex}.status{font-size:12px;color:var(--muted);margin-top:10px;min-height:18px}.setup{margin-top:38px;padding:16px;border:1px solid var(--line);border-radius:14px;color:var(--muted);font-size:12px}.setup summary{cursor:pointer;color:#c4b5fd;font-weight:700}.setup code{color:#ddd}.toast{position:fixed;top:18px;left:50%;transform:translateX(-50%);background:#292432;border:1px solid #574675;border-radius:12px;padding:11px 16px;z-index:20;display:none}
+    @media(max-width:700px){.app{padding:18px 14px 125px}.hero{padding-top:22px}.hero h1{letter-spacing:-2px}.player-inner{grid-template-columns:1fr auto;gap:8px}.controls{grid-column:1/-1;grid-row:2}.volume{display:none}.now{grid-column:1/-1}.player{padding:9px 14px}.mini-cover{width:35px;height:35px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.track{padding:9px}.head-actions .pill{padding:8px 11px;font-size:12px}}
+  </style>
 </head>
 <body>
-<div class="app">
-<aside class="sidebar">
- <div class="side-panel side-top">
-  <a class="logo" href="#"><span class="logo-mark">♫</span> Waveform</a>
-  <nav class="side-nav"><a class="selected" href="#home">⌂ &nbsp; Beranda</a><button id="openUploadSide">⊕ &nbsp; Upload lagu</button></nav>
- </div>
- <div class="side-panel library"><div class="library-head">▤ &nbsp; Perpustakaan</div><div class="hint">Semua lagu yang diupload admin akan muncul di sini dan bisa didengarkan pengunjung dari perangkat mana pun.</div></div>
-</aside>
-<main class="main-panel" id="home">
- <header class="topbar"><div class="history"><button class="circle" onclick="history.back()">‹</button><button class="circle" onclick="history.forward()">›</button></div><div class="top-actions"><span class="user-label" id="userLabel">Mode pengunjung</span><button class="btn dark" id="loginBtn">Login admin</button><button class="btn" id="logoutBtn" hidden>Keluar</button></div></header>
- <div class="content">
-  <section class="welcome"><h1>Musik untuk semua.</h1><p>Dengarkan koleksi musik yang tersedia, dari mana saja.</p></section>
-  <section class="upload-panel" id="uploadPanel"><b>Upload musik baru</b><div class="form-grid"><input class="field" id="songTitle" placeholder="Judul lagu (opsional)"><input class="field" id="songArtist" placeholder="Nama artis (opsional)"><input class="field full" id="songFile" type="file" accept="audio/*"></div><div class="upload-actions"><button class="btn green" id="uploadSubmit">Upload ke perpustakaan</button><button class="btn dark" id="cancelUpload">Batal</button><span class="small-note" id="uploadStatus">Hanya admin yang dapat mengupload.</span></div></section>
-  <div class="section-title"><h2>Semua lagu</h2><span class="user-label" id="songCount">Memuat...</span></div>
-  <div class="search-row"><input class="search" id="search" type="search" placeholder="Cari judul lagu atau artis..."></div>
-  <div class="track-head"><span>#</span><span>Judul</span><span class="album-col">Ditambahkan</span><span>Durasi</span><span></span></div>
-  <div id="trackList"></div><div class="empty" id="empty"><strong>Belum ada lagu</strong>Belum ada musik yang diupload. Admin bisa login untuk menambahkan lagu.</div>
- </div>
-</main>
-<section class="player">
- <div class="now"><div class="now-cover" id="nowCover">♫</div><div class="now-text"><b id="nowTitle">Pilih lagu untuk diputar</b><span id="nowArtist">Waveform Music Library</span></div></div>
- <div class="center"><div class="controls"><button class="control" id="prev" title="Sebelumnya">▮◂</button><button class="control main-play" id="play">▶</button><button class="control" id="next" title="Berikutnya">▸▮</button></div><div class="progress"><span id="elapsed">0:00</span><input class="range" type="range" id="seek" min="0" max="1000" value="0"><span id="duration">0:00</span></div></div>
- <div class="volume"><span>◖</span><input class="range" type="range" id="volume" min="0" max="1" step=".01" value=".8"></div>
-</section>
-</div>
-<div class="toast" id="toast" role="status"></div>
-<div class="modal-bg" id="modalBg"><div class="modal"><h3 id="modalTitle">Info</h3><p id="modalText"></p><div class="modal-actions"><button class="btn dark" id="modalCancel">Tutup</button><button class="btn green" id="modalConfirm">Lanjut</button></div></div></div>
-<audio id="audio" preload="metadata"></audio>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <div class="app">
+    <header>
+      <div class="brand"><div class="logo">♫</div> WAVEFORM</div>
+      <div class="head-actions">
+        <div class="admin-tools" id="adminTools"><button class="secondary" id="uploadBtn">＋ Upload</button><button class="secondary" id="logoutBtn">Keluar</button></div>
+        <button class="pill" id="loginBtn">Login Admin</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="eyebrow">Your sound, your space</div>
+      <h1>Temukan irama.<br>Putar sesukamu.</h1>
+      <p>Tempat untuk menemukan dan mendengarkan musik. Masuk sebagai admin untuk menambahkan lagu agar bisa dinikmati semua pengunjung.</p>
+    </section>
+
+    <div class="toolbar">
+      <div class="search"><input id="searchInput" type="search" placeholder="Cari judul lagu atau artis..."></div>
+      <button class="secondary" id="refreshBtn">↻ Muat ulang</button>
+    </div>
+
+    <section>
+      <div class="section-title"><h2>Semua lagu</h2><span class="count" id="songCount">0 lagu</span></div>
+      <div class="grid" id="songGrid"><div class="empty">Menghubungkan ke perpustakaan musik...</div></div>
+    </section>
+
+    <details class="setup">
+      <summary>Petunjuk konfigurasi (buka sebelum website dipublikasikan)</summary>
+      <p>1. Buat project di Supabase. Buka <b>Project Settings → API</b>, lalu isi <code>SUPABASE_URL</code> dan <code>SUPABASE_ANON_KEY</code> di bagian paling bawah file ini.</p>
+      <p>2. Buka SQL Editor di Supabase dan jalankan SQL berikut:</p>
+      <pre style="white-space:pre-wrap;overflow:auto;background:#101016;padding:12px;border-radius:9px;color:#ddd">create table if not exists public.songs (
+  id bigint generated by default as identity primary key,
+  title text not null,
+  artist text not null default 'Unknown Artist',
+  file_path text not null,
+  cover_url text,
+  created_at timestamptz default now()
+);
+alter table public.songs enable row level security;
+create policy "Songs are public to read" on public.songs
+for select using (true);
+create policy "Admins can add songs" on public.songs
+for insert to authenticated with check ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+create policy "Admins can delete songs" on public.songs
+for delete to authenticated using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('music', 'music', true, 52428800, array['audio/mpeg','audio/mp4','audio/aac','audio/ogg','audio/wav','audio/flac'])
+on conflict (id) do update set public = true;
+create policy "Public can listen to music" on storage.objects
+for select using (bucket_id = 'music');
+create policy "Admins can upload music" on storage.objects
+for insert to authenticated with check (
+  bucket_id = 'music' and (auth.jwt() -> 'app_metadata' ->> 'role') = 'admin'
+);
+create policy "Admins can delete music" on storage.objects
+for delete to authenticated using (
+  bucket_id = 'music' and (auth.jwt() -> 'app_metadata' ->> 'role') = 'admin'
+);</pre>
+      <p>3. Buat user admin di <b>Authentication → Users</b>. Lalu jalankan SQL ini dengan email admin kamu:</p>
+      <pre style="white-space:pre-wrap;overflow:auto;background:#101016;padding:12px;border-radius:9px;color:#ddd">update auth.users
+set raw_app_meta_data = coalesce(raw_app_meta_data, '{}'::jsonb) || '{"role":"admin"}'::jsonb
+where email = 'EMAIL_ADMIN_KAMU';</pre>
+      <p>4. Upload file ini ke GitHub, lalu hubungkan repository ke Cloudflare Pages. Jangan pernah menaruh service_role key di HTML. Gunakan hanya anon/public key.</p>
+      <p>Catatan: batas upload bawaan 50 MB per lagu. Sesuaikan kebijakan storage jika ingin ukuran berbeda. Pastikan kamu punya hak untuk mengunggah dan membagikan audio.</p>
+    </details>
+  </div>
+
+  <div class="player">
+    <div class="player-inner">
+      <div class="now"><img class="mini-cover" id="nowCover" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect width='100%25' height='100%25' fill='%23302444'/%3E%3Ctext x='50%25' y='58%25' text-anchor='middle' font-size='36' fill='%23c4b5fd'%3E%E2%99%AB%3C/text%3E%3C/svg%3E"><div style="min-width:0"><strong id="nowTitle">Belum ada lagu diputar</strong><span id="nowArtist">Pilih lagu untuk mulai</span></div></div>
+      <div class="controls"><div class="control-buttons"><button id="prevBtn" title="Sebelumnya">|◀</button><button class="main-play" id="playBtn" title="Putar">▶</button><button id="nextBtn" title="Berikutnya">▶|</button></div><div class="progress"><span id="currentTime">0:00</span><input id="seekBar" type="range" min="0" max="100" value="0"><span id="duration">0:00</span></div></div>
+      <div class="volume"><span>🔊 </span><input id="volume" type="range" min="0" max="1" step=".01" value=".8"></div>
+    </div>
+  </div>
+
+  <dialog id="loginDialog">
+    <h2>Login Admin</h2><p>Masuk untuk mengelola perpustakaan musik.</p>
+    <form id="loginForm">
+      <div class="field"><label>Email</label><input id="email" type="email" required autocomplete="username"></div>
+      <div class="field"><label>Password</label><input id="password" type="password" required autocomplete="current-password"></div>
+      <div class="status" id="loginStatus"></div>
+      <div class="modal-actions"><button type="button" class="secondary" data-close="loginDialog">Batal</button><button class="primary" type="submit">Masuk</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="uploadDialog">
+    <h2>Upload lagu</h2><p>File akan disimpan online dan dapat diputar oleh semua pengunjung.</p>
+    <form id="uploadForm">
+      <div class="field"><label>Judul lagu</label><input id="songTitle" required maxlength="100" placeholder="Judul lagu"></div>
+      <div class="field"><label>Nama artis</label><input id="songArtist" maxlength="100" placeholder="Nama artis"></div>
+      <div class="field"><label>File audio (maksimal 50 MB)</label><input id="songFile" type="file" accept="audio/*" required></div>
+      <div class="field"><label>URL cover (opsional)</label><input id="coverUrl" type="url" placeholder="https://..."></div>
+      <div class="status" id="uploadStatus"></div>
+      <div class="modal-actions"><button type="button" class="secondary" data-close="uploadDialog">Batal</button><button class="primary" type="submit">Upload lagu</button></div>
+    </form>
+  </dialog>
+  <div class="toast" id="toast"></div>
+  <audio id="audio" preload="metadata"></audio>
+
 <script>
-/* Isi dua nilai ini dari Supabase: Project Settings > API. */
-const SUPABASE_URL = "GANTI_DENGAN_SUPABASE_PROJECT_URL";
-const SUPABASE_ANON_KEY = "GANTI_DENGAN_SUPABASE_ANON_PUBLIC_KEY";
-(() => {
- const $=s=>document.querySelector(s), audio=$('#audio');
- const configured=SUPABASE_URL.startsWith('https://')&&!SUPABASE_URL.includes('GANTI_')&&!SUPABASE_ANON_KEY.includes('GANTI_');
- let client=null,user=null,songs=[],activeId=null,activeUrl=null,toastTimer=null;
- const toast=m=>{$('#toast').textContent=m;$('#toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.remove('show'),2600)};
- const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- const time=n=>{if(!Number.isFinite(n))return'0:00';return Math.floor(n/60)+':'+String(Math.floor(n%60)).padStart(2,'0')};
- const isAdmin=()=>!!user&&user.app_metadata?.role==='admin';
- function showModal(title,text,confirm='Mengerti',fn=()=>{}){$('#modalTitle').textContent=title;$('#modalText').textContent=text;$('#modalBg').classList.add('show');$('#modalConfirm').textContent=confirm;$('#modalConfirm').onclick=()=>{$('#modalBg').classList.remove('show');fn()};$('#modalCancel').onclick=()=>$('#modalBg').classList.remove('show')}
- function updateAuthUI(){$('#userLabel').textContent=isAdmin()?'Admin aktif':user?'Login pengguna':'Mode pengunjung';$('#loginBtn').hidden=!!user;$('#logoutBtn').hidden=!user;$('#openUploadSide').hidden=!isAdmin();if(!isAdmin())$('#uploadPanel').classList.remove('show')}
- function formatDate(s){return new Date(s).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'})}
- function render(){const q=$('#search').value.toLowerCase().trim();const list=songs.filter(s=>(s.title+' '+(s.artist||'')).toLowerCase().includes(q));$('#songCount').textContent=songs.length+' lagu';$('#trackList').innerHTML=list.map((s,i)=>`<div class="track-row ${s.id===activeId?'playing':''}" data-id="${esc(s.id)}"><span class="track-num">${i+1}</span><div class="track-main"><div class="cover">♫</div><div style="min-width:0"><div class="track-title">${esc(s.title)}</div><div class="track-artist">${esc(s.artist||'Artis tidak diketahui')}</div></div></div><span class="track-album">${formatDate(s.created_at)}</span><span class="track-duration">${s.duration?time(s.duration):'—'}</span><span class="track-actions">${isAdmin()?`<button class="text-btn delete" data-delete="${esc(s.id)}" title="Hapus">✕</button>`:''}</span></div>`).join('');$('#empty').style.display=list.length?'none':'block';$('#empty').innerHTML=songs.length?'<strong>Tidak ditemukan</strong>Coba kata pencarian lain.':'<strong>Belum ada lagu</strong>Admin bisa login untuk menambahkan lagu.'}
- async function refreshSongs(){const {data,error}=await client.from('songs').select('*').order('created_at',{ascending:false});if(error){console.error(error);toast('Gagal memuat daftar lagu: '+error.message);return}songs=data||[];render()}
- async function playSong(id){const s=songs.find(x=>x.id===id);if(!s)return;if(activeUrl)URL.revokeObjectURL(activeUrl);activeId=s.id;audio.src=s.public_url;$('#nowTitle').textContent=s.title;$('#nowArtist').textContent=s.artist||'Artis tidak diketahui';$('#nowCover').textContent='♫';render();try{await audio.play();$('#play').textContent='Ⅱ'}catch(e){toast('Browser tidak dapat memutar audio ini.');$('#play').textContent='▶'}}
- function playPause(){if(!activeId){if(songs.length)playSong(songs[0].id);else toast('Belum ada lagu untuk diputar.');return}if(audio.paused)audio.play().then(()=>$('#play').textContent='Ⅱ').catch(()=>toast('Gagal memutar lagu'));else audio.pause()}
- function step(dir){if(!songs.length)return;let i=songs.findIndex(s=>s.id===activeId);playSong(songs[(i+dir+songs.length)%songs.length].id)}
- async function login(){if(!configured){showModal('Konfigurasi belum diisi','Tambahkan URL project dan anon key Supabase di bagian atas file index.html. Ikuti README.md untuk langkah lengkap.');return}const email=prompt('Email admin Supabase:');if(!email)return;const password=prompt('Password akun admin:');if(!password)return;const {error}=await client.auth.signInWithPassword({email,password});if(error)toast('Login gagal: '+error.message);else toast('Login berhasil')}
- async function upload(){if(!isAdmin()){toast('Hanya admin yang bisa upload.');return}const file=$('#songFile').files[0];if(!file){toast('Pilih file audio terlebih dahulu.');return}if(!file.type.startsWith('audio/')&&!/\.(mp3|wav|ogg|m4a|flac|aac)$/i.test(file.name)){toast('File harus berupa audio.');return}if(file.size>50*1024*1024){toast('Ukuran maksimal file adalah 50 MB.');return}
-  const title=$('#songTitle').value.trim()||file.name.replace(/\.[^.]+$/,'');const artist=$('#songArtist').value.trim()||'Artis tidak diketahui';const ext=(file.name.split('.').pop()||'audio').toLowerCase();const path=crypto.randomUUID()+'.'+ext;const btn=$('#uploadSubmit');btn.disabled=true;btn.textContent='Mengupload...';$('#uploadStatus').textContent='Mengirim file ke penyimpanan online...';
-  try{const {error:upErr}=await client.storage.from('audio').upload(path,file,{contentType:file.type||'application/octet-stream',upsert:false});if(upErr)throw upErr;const {data:pub}=client.storage.from('audio').getPublicUrl(path);const {error:dbErr}=await client.from('songs').insert({title,artist,file_path:path,public_url:pub.publicUrl});if(dbErr){await client.storage.from('audio').remove([path]);throw dbErr}$('#songTitle').value='';$('#songArtist').value='';$('#songFile').value='';$('#uploadPanel').classList.remove('show');$('#uploadStatus').textContent='';await refreshSongs();toast('Lagu berhasil diupload dan tersedia untuk semua pengunjung.')}
-  catch(e){console.error(e);$('#uploadStatus').textContent=e.message;toast('Upload gagal: '+e.message)}finally{btn.disabled=false;btn.textContent='Upload ke perpustakaan'}}
- async function deleteSong(id){const s=songs.find(x=>x.id===id);if(!s)return;showModal('Hapus lagu?',`Lagu “${s.title}” akan dihapus dari perpustakaan publik.`, 'Hapus',async()=>{const {error}=await client.from('songs').delete().eq('id',id);if(error){toast('Gagal menghapus: '+error.message);return}await client.storage.from('audio').remove([s.file_path]);if(activeId===id){audio.pause();audio.removeAttribute('src');activeId=null;$('#nowTitle').textContent='Pilih lagu untuk diputar';$('#nowArtist').textContent='Waveform Music Library';$('#play').textContent='▶'}await refreshSongs();toast('Lagu dihapus')})}
- $('#loginBtn').onclick=login;$('#logoutBtn').onclick=async()=>{await client.auth.signOut();toast('Kamu sudah logout')};
- $('#openUploadSide').onclick=()=>$('#uploadPanel').classList.toggle('show');$('#cancelUpload').onclick=()=>$('#uploadPanel').classList.remove('show');$('#uploadSubmit').onclick=upload;
- $('#search').addEventListener('input',render);$('#trackList').addEventListener('click',e=>{const del=e.target.closest('[data-delete]');const row=e.target.closest('.track-row');if(del)deleteSong(del.dataset.delete);else if(row)playSong(row.dataset.id)});
- $('#play').onclick=playPause;$('#next').onclick=()=>step(1);$('#prev').onclick=()=>{if(audio.currentTime>3)audio.currentTime=0;else step(-1)};
- audio.addEventListener('play',()=>$('#play').textContent='Ⅱ');audio.addEventListener('pause',()=>$('#play').textContent='▶');audio.addEventListener('ended',()=>step(1));
- audio.addEventListener('loadedmetadata',()=>$('#duration').textContent=time(audio.duration));audio.addEventListener('timeupdate',()=>{if(!Number.isFinite(audio.duration))return;$('#seek').value=audio.currentTime/audio.duration*1000;$('#elapsed').textContent=time(audio.currentTime);$('#duration').textContent=time(audio.duration)});
- $('#seek').oninput=e=>{if(Number.isFinite(audio.duration))audio.currentTime=Number(e.target.value)/1000*audio.duration};$('#volume').oninput=e=>audio.volume=Number(e.target.value);audio.volume=.8;
- if(!configured){$('#songCount').textContent='Belum dikonfigurasi';$('#empty').innerHTML='<strong>Hubungkan Supabase terlebih dahulu</strong>Isi SUPABASE_URL dan SUPABASE_ANON_KEY di file index.html. Lihat README.md.';$('#empty').style.display='block';$('#loginBtn').textContent='Setup Supabase';}
- else{client=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);client.auth.getSession().then(({data})=>{user=data.session?.user||null;updateAuthUI();refreshSongs()});client.auth.onAuthStateChange((_event,session)=>{user=session?.user||null;updateAuthUI();refreshSongs()})}
-})();
+  // GANTI DUA NILAI INI DENGAN PROJECT URL DAN ANON/PUBLIC KEY DARI SUPABASE.
+  const SUPABASE_URL = "https://YOUR-PROJECT.supabase.co";
+  const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_PUBLIC_KEY";
+  const BUCKET = "music";
+
+  const $ = id => document.getElementById(id);
+  const audio = $("audio");
+  let db = null, songs = [], currentIndex = -1, currentUser = null;
+
+  function notify(message){const t=$("toast");t.textContent=message;t.style.display="block";clearTimeout(notify.timer);notify.timer=setTimeout(()=>t.style.display="none",2800)}
+  function timeFmt(value){if(!Number.isFinite(value))return "0:00";return Math.floor(value/60)+":"+String(Math.floor(value%60)).padStart(2,"0")}
+  function escapeHtml(value=""){return String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+  function fallbackCover(){return "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cdefs%3E%3ClinearGradient id='g'%3E%3Cstop stop-color='%233d2b60'/%3E%3Cstop offset='1' stop-color='%2317171e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23g)'/%3E%3Ctext x='50%25' y='58%25' text-anchor='middle' font-size='120' fill='%23c4b5fd'%3E%E2%99%AB%3C/text%3E%3C/svg%3E"}
+  function publicAudioUrl(path){return db.storage.from(BUCKET).getPublicUrl(path).data.publicUrl}
+  function renderSongs(){
+    const q=$("searchInput").value.trim().toLowerCase();
+    const filtered=songs.filter(s=>(s.title+" "+s.artist).toLowerCase().includes(q));
+    $("songCount").textContent=filtered.length+" lagu";
+    if(!filtered.length){$("songGrid").innerHTML='<div class="empty">'+(songs.length?'Lagu tidak ditemukan. Coba kata kunci lain.':'Belum ada lagu. Admin bisa login lalu upload lagu pertama.')+'</div>';return}
+    $("songGrid").innerHTML=filtered.map(s=>{
+      const index=songs.findIndex(x=>x.id===s.id);
+      return `<article class="track"><img class="cover" src="${escapeHtml(s.cover_url||fallbackCover())}" onerror="this.src='${fallbackCover()}'" alt="Cover"><h3 title="${escapeHtml(s.title)}">${escapeHtml(s.title)}</h3><p>${escapeHtml(s.artist||"Unknown Artist")}</p><div class="track-bottom"><span class="muted" style="font-size:11px">WAVEFORM</span><div style="display:flex;gap:6px"><button class="play" aria-label="Putar" onclick="playSong(${index})">▶</button>${currentUser?`<button class="danger" onclick="deleteSong(${index})" title="Hapus">Hapus</button>`:''}</div></div></article>`
+    }).join("");
+  }
+  async function loadSongs(){
+    if(!db){$("songGrid").innerHTML='<div class="empty">Atur SUPABASE_URL dan SUPABASE_ANON_KEY di dalam file HTML terlebih dahulu.</div>';return}
+    $("songGrid").innerHTML='<div class="empty">Memuat lagu...</div>';
+    const {data,error}=await db.from("songs").select("*").order("created_at",{ascending:false});
+    if(error){$("songGrid").innerHTML='<div class="empty">Gagal memuat lagu: '+escapeHtml(error.message)+'</div>';return}
+    songs=data||[];renderSongs();
+  }
+  window.playSong=function(index){
+    if(index<0||index>=songs.length)return;
+    currentIndex=index;const s=songs[index];audio.src=publicAudioUrl(s.file_path);
+    $("nowTitle").textContent=s.title;$("nowArtist").textContent=s.artist||"Unknown Artist";
+    $("nowCover").src=s.cover_url||fallbackCover();audio.play().then(()=>$("playBtn").textContent="Ⅱ").catch(()=>notify("Tidak dapat memutar audio ini."));
+  }
+  async function deleteSong(index){
+    if(!currentUser||!confirm("Hapus lagu ini dari perpustakaan?"))return;
+    const s=songs[index];
+    const {error:storageError}=await db.storage.from(BUCKET).remove([s.file_path]);
+    if(storageError){notify("Gagal menghapus file: "+storageError.message);return}
+    const {error}=await db.from("songs").delete().eq("id",s.id);
+    if(error){notify("Gagal menghapus data: "+error.message);return}
+    if(currentIndex===index){audio.pause();audio.removeAttribute("src");currentIndex=-1;$("nowTitle").textContent="Belum ada lagu diputar";$("nowArtist").textContent="Pilih lagu untuk mulai"}
+    await loadSongs();notify("Lagu berhasil dihapus.");
+  }
+  window.deleteSong=deleteSong;
+  async function syncAuth(){
+    if(!db)return;
+    const {data}=await db.auth.getSession();currentUser=data.session?.user||null;
+    $("adminTools").classList.toggle("show",!!currentUser);$("loginBtn").style.display=currentUser?"none":"block";
+    renderSongs();
+  }
+  $("loginBtn").onclick=()=>$("loginDialog").showModal();
+  $("uploadBtn").onclick=()=>$("uploadDialog").showModal();
+  $("logoutBtn").onclick=async()=>{await db.auth.signOut();await syncAuth();notify("Kamu sudah logout.")};
+  document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>$(b.dataset.close).close());
+  $("loginForm").onsubmit=async e=>{
+    e.preventDefault();$("loginStatus").textContent="Memeriksa akun...";
+    const {error}=await db.auth.signInWithPassword({email:$("email").value,password:$("password").value});
+    if(error){$("loginStatus").textContent=error.message;return}
+    $("loginStatus").textContent="";$("loginDialog").close();$("loginForm").reset();await syncAuth();notify("Login berhasil.");
+  };
+  $("uploadForm").onsubmit=async e=>{
+    e.preventDefault();if(!currentUser){notify("Login admin terlebih dahulu.");return}
+    const file=$("songFile").files[0];if(!file)return;
+    if(file.size>50*1024*1024){$("uploadStatus").textContent="File melebihi batas 50 MB.";return}
+    if(!file.type.startsWith("audio/")){$("uploadStatus").textContent="Pilih file audio yang valid.";return}
+    $("uploadStatus").textContent="Mengunggah file...";
+    const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+    const path=Date.now()+"_"+crypto.randomUUID()+"_"+safeName;
+    const {error:upErr}=await db.storage.from(BUCKET).upload(path,file,{contentType:file.type,upsert:false});
+    if(upErr){$("uploadStatus").textContent="Upload gagal: "+upErr.message;return}
+    $("uploadStatus").textContent="Menyimpan informasi lagu...";
+    const {error}=await db.from("songs").insert({title:$("songTitle").value.trim(),artist:$("songArtist").value.trim()||"Unknown Artist",file_path:path,cover_url:$("coverUrl").value.trim()||null});
+    if(error){await db.storage.from(BUCKET).remove([path]);$("uploadStatus").textContent="Gagal menyimpan data: "+error.message;return}
+    $("uploadForm").reset();$("uploadStatus").textContent="";$("uploadDialog").close();await loadSongs();notify("Lagu berhasil diunggah!");
+  };
+  $("searchInput").addEventListener("input",renderSongs);
+  $("refreshBtn").onclick=loadSongs;
+  $("playBtn").onclick=()=>{if(!audio.src){if(songs.length)playSong(0);return}if(audio.paused)audio.play();else audio.pause()};
+  $("prevBtn").onclick=()=>{if(songs.length)playSong((currentIndex-1+songs.length)%songs.length)};
+  $("nextBtn").onclick=()=>{if(songs.length)playSong((currentIndex+1)%songs.length)};
+  $("volume").oninput=e=>audio.volume=Number(e.target.value);
+  audio.volume=.8;
+  audio.onplay=()=>$("playBtn").textContent="Ⅱ";audio.onpause=()=>$("playBtn").textContent="▶";
+  audio.ontimeupdate=()=>{if(audio.duration){$("seekBar").value=audio.currentTime/audio.duration*100;$("currentTime").textContent=timeFmt(audio.currentTime);$("duration").textContent=timeFmt(audio.duration)}};
+  $("seekBar").oninput=e=>{if(audio.duration)audio.currentTime=Number(e.target.value)/100*audio.duration};
+  audio.onended=()=>{if(songs.length)playSong((currentIndex+1)%songs.length)};
+  (async function init(){
+    if(!window.supabase){$("songGrid").innerHTML='<div class="empty">Library Supabase gagal dimuat. Periksa koneksi internet.</div>';return}
+    if(SUPABASE_URL.includes("YOUR-PROJECT")||SUPABASE_ANON_KEY.includes("YOUR_SUPABASE")){await loadSongs();return}
+    db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+    await syncAuth();await loadSongs();
+    db.auth.onAuthStateChange(()=>syncAuth());
+  })();
 </script>
 </body>
 </html>
